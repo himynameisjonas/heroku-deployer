@@ -1,8 +1,6 @@
-require 'sinatra'
 require 'git-ssh-wrapper'
 require 'git'
 require 'zlib'
-require 'sucker_punch'
 
 class HerokuDeployer
   attr_reader :app
@@ -63,40 +61,5 @@ class HerokuDeployer
   def push
     puts "pushing"
     puts `cd #{local_folder}; git push -f heroku master`
-  end
-end
-
-class DeployJob
-  include SuckerPunch::Job
-
-  def perform(app_name)
-    HerokuDeployer.new(app_name).deploy
-  end
-end
-
-class DeployerApp < Sinatra::Application
-  before do
-    if ENV['DEPLOY_SECRET'].nil? || ENV['DEPLOY_SECRET'].empty?
-      halt "Set your DEPLOY_SECRET"
-    end
-  end
-
-  get '/' do
-    "Hello World!"
-  end
-
-  post '/deploy/:app_name/:secret' do |app_name, secret|
-    if secret == ENV['DEPLOY_SECRET']
-      puts "correct secret"
-      if HerokuDeployer.exists?(app_name)
-        puts "app exists"
-        DeployJob.new.async.perform(app_name)
-      else
-        puts "no app"
-      end
-    else
-      puts "wrong secret"
-    end
-    "maybe"
   end
 end
