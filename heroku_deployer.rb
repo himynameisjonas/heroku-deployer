@@ -7,17 +7,27 @@ require 'sucker_punch'
 class HerokuDeployer
   attr_reader :app
 
+  def self.exists?(app)
+    !!(ENV["#{app}_HEROKU_REPO"] && ENV["#{app}_GIT_REPO"] && ENV["#{app}_SSH_KEY"])
+  end
+
   def initialize(app_name)
     @app = app_name
   end
 
   def deploy
-    update_local_repository
-    push
-  end
-
-  def self.exists?(app)
-    !!(ENV["#{app}_HEROKU_REPO"] && ENV["#{app}_GIT_REPO"] && ENV["#{app}_SSH_KEY"])
+    GitSSHWrapper.with_wrapper(:private_key => config.ssh_key) do |wrapper|
+      wrapper.set_env
+      tries = 0
+      begin
+        update_local_repository
+        push
+      rescue
+        tries += 1
+        `rm -r #{local_folder}` rescue nil
+        retry if tries <= 1
+      end
+    end
   end
 
   private
@@ -86,7 +96,15 @@ class DeployerApp < Sinatra::Application
 
   post '/deploy/:app_name/:secret' do |app_name, secret|
     if secret == ENV['DEPLOY_SECRET']
-      DeployJob.new.async.perform(app_name) if HerokuDeployer.exists?(app_name)
+      puts "correct secret"
+      if HerokuDeployer.exists?(app_name)
+        puts "app exists"
+        DeployJob.new.async.perform(app_name)
+      else
+        puts "no app"
+      end
+    else
+      puts "wrong secret"
     end
     "maybe"
   end
