@@ -44,34 +44,25 @@ class HerokuDeployer
     @local_folder ||= "repos/#{Zlib.crc32(config.git_repo)}"
   end
 
-  def git_wrapper
-    @git_wrapper ||= GitSSHWrapper.new(private_key: config.ssh_key)
+  def repo_exists?
+    Dir.exists?(File.join(local_folder, '.git'))
   end
 
   def update_local_repository
-    repo = begin
-      Git.open(local_folder).tap do |g|
-        g.fetch
-        g.remote('origin').merge
-      end
-    rescue ArgumentError => e
-      `rm -r #{local_folder}` rescue nil
-      clone
-      retry
-    end
-    repo.add_remote('heroku', config.heroku_repo) unless repo.remote('heroku').url
+    clone unless repo_exists?
+    puts "fetching"
+    `cd #{local_folder} && git fetch && git reset --hard origin/master`
   end
 
   def clone
-    `env #{git_wrapper.git_ssh} git clone #{config.git_repo} #{local_folder}`
-  ensure
-    git_wrapper.unlink
+    puts "cloning"
+    `git clone #{config.git_repo} #{local_folder}`
+    `cd #{local_folder} && git remote add heroku #{config.heroku_repo}`
   end
 
   def push
-    puts `cd #{local_folder}; env #{git_wrapper.git_ssh} git push -f heroku master`
-  ensure
-    git_wrapper.unlink
+    puts "pushing"
+    puts `cd #{local_folder}; git push -f heroku master`
   end
 end
 
