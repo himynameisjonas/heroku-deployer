@@ -7,6 +7,10 @@ class Web < Sinatra::Application
     if ENV['DEPLOY_SECRET'].nil? || ENV['DEPLOY_SECRET'].empty?
       halt "Set your DEPLOY_SECRET"
     end
+
+    if ENV['DEPLOY_SSH_KEY'].nil? || ENV['DEPLOY_SSH_KEY'].empty?
+      halt "Set your DEPLOY_SSH_KEY"
+    end
   end
 
   get '/' do

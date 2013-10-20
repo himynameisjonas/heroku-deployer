@@ -5,10 +5,11 @@ require 'rack/test'
 describe Web do
   include Rack::Test::Methods
 
-  before(:all) do
+  before do
     ENV['test_app_HEROKU_REPO'] = "heroku-repo"
     ENV['test_app_GIT_REPO'] = "git-repo"
     ENV['test_app_SSH_KEY'] = "private-key"
+    ENV['DEPLOY_SSH_KEY'] = 'private-deploy-key'
   end
 
   let(:app) { Web }
@@ -23,6 +24,17 @@ describe Web do
       post '/deploy/test_app'
       expect(last_response).to be_ok
       expect(last_response.body).to eq('Set your DEPLOY_SECRET')
+    end
+  end
+
+  context 'without a deploy ssh key' do
+    it 'requires a deploy key' do
+      ENV['DEPLOY_SECRET'] = deploy_secret
+      ENV['DEPLOY_SSH_KEY'] = nil
+
+      post correct_path
+      expect(last_response).to be_ok
+      expect(last_response.body).to eq('Set your DEPLOY_SSH_KEY')
     end
   end
 
