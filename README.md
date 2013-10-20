@@ -5,6 +5,9 @@ Deploy to Heroku with a Github webhook (or anything that can do a post request) 
 
 Supports multiple apps and even other services that does webhooks (for example [Bitbucket](https://confluence.atlassian.com/display/BITBUCKET/POST+hook+management))
 
+### Jekyll + Heroku + Prose.io
+I built this to ease the workflow when editing a [Jekyll](http://jekyllrb.com/) site that is hosted on Heroku. Edit your jekyll site with [prose.io](http://prose.io/) and have it automatically deployed to Heroku when changes is made. See [himynameisjonas/jekyll-heroku-unicorn](https://github.com/himynameisjonas/jekyll-heroku-unicorn) for how to host a jekyll site on Heroku without need of building the site before deploy.
+
 ## Usage
 1. **Clone this repo**
 
