@@ -23,8 +23,10 @@ class HerokuDeployer
         push
       rescue
         tries += 1
-        `rm -r #{local_folder}` rescue nil
-        retry if tries <= 1
+        if tries <= 1
+          `rm -r #{local_folder}` rescue nil
+          retry
+        end
       end
     end
   end
