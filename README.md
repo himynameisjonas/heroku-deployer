@@ -1,4 +1,4 @@
-HerokuDeployer
+HerokuDeployer [![Build Status](https://travis-ci.org/himynameisjonas/heroku-deployer.png?branch=master)](https://travis-ci.org/himynameisjonas/heroku-deployer)
 ===============
 
 Deploy to Heroku with a Github webhook (or anything that can do a post request) for automatic deploys to Heroku when you push to Github.
