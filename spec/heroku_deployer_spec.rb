@@ -5,6 +5,7 @@ describe HerokuDeployer do
     ENV['test_app_HEROKU_REPO'] = "heroku-repo"
     ENV['test_app_GIT_REPO'] = "git-repo"
     ENV['test_app_SSH_KEY'] = "private-key"
+    ENV['DEPLOY_SSH_KEY'] = "private-deploy-key"
   end
 
   describe '.exists?' do
@@ -40,14 +41,6 @@ describe HerokuDeployer do
         deployer.stub(:push)
       end
 
-      it 'wrapps all calls with a GitSSHWrapper' do
-        wrapper = double()
-        expect(wrapper).to receive(:set_env)
-        expect(GitSSHWrapper).to receive(:with_wrapper).with(private_key: ENV['test_app_SSH_KEY']).and_yield(wrapper)
-
-        deployer.deploy
-      end
-
       it 'removes the folder and retries one time' do
         expect(deployer).to receive(:`).with(/rm -r repos\/\d+/).once
         expect(deployer).to receive(:push).and_raise('failed').twice
@@ -59,6 +52,7 @@ describe HerokuDeployer do
     describe '#update_local_repository' do
       before do
         deployer.stub(:`)
+        deployer.stub(:push)
       end
 
       let(:clone_cmd) do
@@ -69,6 +63,14 @@ describe HerokuDeployer do
       end
 
       context 'without an existing local repo' do
+        it 'wrapps all calls with a GitSSHWrapper' do
+          wrapper = double()
+          expect(wrapper).to receive(:set_env)
+          expect(GitSSHWrapper).to receive(:with_wrapper).with(private_key: ENV['test_app_SSH_KEY']).and_yield(wrapper)
+
+          deployer.deploy
+        end
+
         it 'clones the repo' do
           expect(deployer).to receive(:repo_exists?){ false }
           expect(deployer).to receive(:`).with(clone_cmd)
@@ -93,8 +95,20 @@ describe HerokuDeployer do
     end
 
     describe '#push' do
-      it 'pushes to heroku' do
+      before do
         deployer.stub(:update_local_repository)
+      end
+
+      it 'wrapps all calls with a GitSSHWrapper' do
+        deployer.stub(:`)
+        wrapper = double()
+        expect(wrapper).to receive(:set_env)
+        expect(GitSSHWrapper).to receive(:with_wrapper).with(private_key: ENV['DEPLOY_SSH_KEY']).and_yield(wrapper)
+
+        deployer.deploy
+      end
+
+      it 'pushes to heroku' do
         expect(deployer).to receive(:`).with(/cd repos\/\d+\; git push -f heroku master/)
         deployer.deploy
       end

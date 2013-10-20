@@ -2,6 +2,7 @@ require 'git-ssh-wrapper'
 require 'git'
 require 'zlib'
 require 'ostruct'
+require 'logger'
 
 class HerokuDeployer
   attr_reader :app, :logger
@@ -16,18 +17,15 @@ class HerokuDeployer
   end
 
   def deploy
-    GitSSHWrapper.with_wrapper(:private_key => config.ssh_key) do |wrapper|
-      wrapper.set_env
-      tries = 0
-      begin
-        update_local_repository
-        push
-      rescue
-        tries += 1
-        if tries <= 1
-          `rm -r #{local_folder}` rescue nil
-          retry
-        end
+    tries = 0
+    begin
+      update_local_repository
+      push
+    rescue
+      tries += 1
+      if tries <= 1
+        `rm -r #{local_folder}` rescue nil
+        retry
       end
     end
     logger.info 'done'
@@ -52,9 +50,12 @@ class HerokuDeployer
   end
 
   def update_local_repository
-    clone unless repo_exists?
-    logger.info "fetching"
-    logger.debug `cd #{local_folder} && git fetch && git reset --hard origin/master`
+    GitSSHWrapper.with_wrapper(:private_key => config.ssh_key) do |wrapper|
+      wrapper.set_env
+      clone unless repo_exists?
+      logger.info "fetching"
+      logger.debug `cd #{local_folder} && git fetch && git reset --hard origin/master`
+    end
   end
 
   def clone
@@ -64,7 +65,10 @@ class HerokuDeployer
   end
 
   def push
-    logger.info "pushing"
-    logger.debug `cd #{local_folder}; git push -f heroku master`
+    GitSSHWrapper.with_wrapper(:private_key => ENV['DEPLOY_SSH_KEY']) do |wrapper|
+      wrapper.set_env
+      logger.info "pushing"
+      logger.debug `cd #{local_folder}; git push -f heroku master`
+    end
   end
 end
