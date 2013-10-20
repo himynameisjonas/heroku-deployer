@@ -8,3 +8,8 @@ gem 'git-ssh-wrapper'
 gem 'git'
 
 gem 'sucker_punch', '~> 1.0'
+
+group :test do
+  gem 'rspec'
+  gem 'rack-test'
+end
