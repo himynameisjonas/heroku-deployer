@@ -43,7 +43,7 @@ I built this to ease the workflow when editing a [Jekyll](http://jekyllrb.com/) 
 
   Add a new webhook to the github repository to trigger a deploy to heroku on push.
   ```
-  http://your-heroku-deployer-app.herokuapp.com/example_app/super_secret_string
+  https://your-heroku-deployer-app.herokuapp.com/example_app/super_secret_string
   ```
 
 **Repeat step 3 and 4 for each app you want to deploy**
