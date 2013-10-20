@@ -15,15 +15,15 @@ class Web < Sinatra::Application
 
   post '/deploy/:app_name/:secret' do |app_name, secret|
     if secret == ENV['DEPLOY_SECRET']
-      puts "correct secret"
+      logger.info "correct secret"
       if HerokuDeployer.exists?(app_name)
-        puts "app exists"
+        logger.info "app exists"
         DeployJob.new.async.perform(app_name)
       else
-        puts "no app"
+        logger.info "no app"
       end
     else
-      puts "wrong secret"
+      logger.info "wrong secret"
     end
     "maybe"
   end

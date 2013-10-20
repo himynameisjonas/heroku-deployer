@@ -32,7 +32,7 @@ describe HerokuDeployer do
   end
 
   describe '#deploy' do
-    let(:deployer) { HerokuDeployer.new('test_app') }
+    let(:deployer) { HerokuDeployer.new('test_app', Logger.new('/dev/null')) }
 
     describe 'setup' do
       before do

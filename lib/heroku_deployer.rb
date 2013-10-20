@@ -4,14 +4,15 @@ require 'zlib'
 require 'ostruct'
 
 class HerokuDeployer
-  attr_reader :app
+  attr_reader :app, :logger
 
   def self.exists?(app)
     !!(ENV["#{app}_HEROKU_REPO"] && ENV["#{app}_GIT_REPO"] && ENV["#{app}_SSH_KEY"])
   end
 
-  def initialize(app_name)
+  def initialize(app_name, logger = Logger.new(STDOUT))
     @app = app_name
+    @logger = logger
   end
 
   def deploy
@@ -29,6 +30,7 @@ class HerokuDeployer
         end
       end
     end
+    logger.info 'done'
   end
 
   private
@@ -51,18 +53,18 @@ class HerokuDeployer
 
   def update_local_repository
     clone unless repo_exists?
-    puts "fetching"
-    `cd #{local_folder} && git fetch && git reset --hard origin/master`
+    logger.info "fetching"
+    logger.debug `cd #{local_folder} && git fetch && git reset --hard origin/master`
   end
 
   def clone
-    puts "cloning"
-    `git clone #{config.git_repo} #{local_folder}`
-    `cd #{local_folder} && git remote add heroku #{config.heroku_repo}`
+    logger.info "cloning"
+    logger.debug `git clone #{config.git_repo} #{local_folder}`
+    logger.debug `cd #{local_folder} && git remote add heroku #{config.heroku_repo}`
   end
 
   def push
-    puts "pushing"
-    puts `cd #{local_folder}; git push -f heroku master`
+    logger.info "pushing"
+    logger.debug `cd #{local_folder}; git push -f heroku master`
   end
 end
