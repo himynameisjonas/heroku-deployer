@@ -1,6 +1,7 @@
 require 'git-ssh-wrapper'
 require 'git'
 require 'zlib'
+require 'ostruct'
 
 class HerokuDeployer
   attr_reader :app
