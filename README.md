@@ -103,7 +103,6 @@ to learn how to host a jekyll site on Heroku without need of building the site b
   ```bash
   heroku config:set example_app_SSH_KEY="$(cat example_app_rsa)" example_app_GIT_REPO=ssh://git@github.com/github_username/github_repository.git example_app_HEROKU_REPO=git@heroku.com:example_app.git
   ```
-  
 5. **Setup github webhook**
 
   Add a new webhook to the github repository to trigger a deploy to heroku on push.
