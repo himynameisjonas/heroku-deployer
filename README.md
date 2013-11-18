@@ -15,7 +15,7 @@ HerokuDeployer can support multiple Heroku apps and even other services that use
 
 This is the way I use HerokuDeployer:
 
-I have a [[blog](http://jonasforsberg.se) hosted on Heroku as an app. 
+I have a [blog](http://jonasforsberg.se) hosted on Heroku as an app. 
 I use [Jekyll](http://jekyllrb.com/) which means that my blog posts are static markdown pages kept in a git repository.
 To write new posts I use [prose.io](http://prose.io/) with which I can make changes online directly on github. 
 Then the HerokuDeployer deploys those changes automatically to my blog on Heroku.
@@ -59,7 +59,7 @@ to learn how to host a jekyll site on Heroku without need of building the site b
   An RSA key has a private part, and a public part. We have to give the public part to our old_account, 
   and the private part to our new_account.
   
-  ```
+  ```bash
   Step 1:
     At your browser, sign in to your old_account at Heroku
     Go to Account > SSH Keys
@@ -87,7 +87,7 @@ to learn how to host a jekyll site on Heroku without need of building the site b
   * "github_username" with your github username
   * "github_repository" wiht the name of the github repository you will use for deployment
 
-  ```
+  ```bash
   Step 1 (terminal):
     ssh-keygen -t rsa
     # It will demand for a filename: Save it to "example_app_rsa"
@@ -103,11 +103,11 @@ to learn how to host a jekyll site on Heroku without need of building the site b
   ```bash
   heroku config:set example_app_SSH_KEY="$(cat example_app_rsa)" example_app_GIT_REPO=ssh://git@github.com/github_username/github_repository.git example_app_HEROKU_REPO=git@heroku.com:example_app.git
   ```
-
+  
 5. **Setup github webhook**
 
   Add a new webhook to the github repository to trigger a deploy to heroku on push.
-  ```
+  ```bash
   Connect to github
   Go to github_repository > Settings > Service Hooks
   Add the following link as a WebHook URL
