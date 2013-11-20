@@ -1,4 +1,4 @@
-HerokuDeployer [![Build Status](https://travis-ci.org/himynameisjonas/heroku-deployer.png?branch=master)](https://travis-ci.org/himynameisjonas/heroku-deployer) [![Code Climate](https://codeclimate.com/github/himynameisjonas/heroku-deployer.png)](https://codeclimate.com/github/himynameisjonas/heroku-deployer)
+HerokuDeployer [![Build Status](https://travis-ci.org/himynameisjonas/heroku-deployer.png?branch=master)](https://travis-ci.org/himynameisjonas/heroku-deployer) [![Code Climate](https://codeclimate.com/github/himynameisjonas/heroku-deployer.png)](https://codeclimate.com/github/himynameisjonas/heroku-deployer) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/himynameisjonas/heroku-deployer/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 ===============
 
 HerokuDeployer is an app you can host on Heroku. 
