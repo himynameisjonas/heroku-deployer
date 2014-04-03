@@ -75,6 +75,7 @@ class HerokuDeployer
 
   def post_deploy_hook
     if ENV["POST_DEPLOY_HOOK"]
+      sleep ENV["POST_DEPLOY_HOOK_DELAY"].to_i if ENV["POST_DEPLOY_HOOK_DELAY"]
       logger.info "hitting post deploy hook"
       logger.debug `curl #{ENV["POST_DEPLOY_HOOK"]}`
     end
