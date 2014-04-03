@@ -21,6 +21,7 @@ class HerokuDeployer
     begin
       update_local_repository
       push
+      post_deploy_hook
     rescue
       tries += 1
       if tries <= 1
@@ -37,7 +38,7 @@ class HerokuDeployer
     @config ||= OpenStruct.new({
       heroku_repo: ENV["#{app}_HEROKU_REPO"],
       git_repo: ENV["#{app}_GIT_REPO"],
-      ssh_key: ENV["#{app}_SSH_KEY"],
+      ssh_key: ENV["#{app}_SSH_KEY"]
     })
   end
 
@@ -69,6 +70,13 @@ class HerokuDeployer
       wrapper.set_env
       logger.info "pushing"
       logger.debug `cd #{local_folder}; git push -f heroku master`
+    end
+  end
+
+  def post_deploy_hook
+    if ENV["POST_DEPLOY_HOOK"]
+      logger.info "hitting post deploy hook"
+      logger.debug `curl #{ENV["POST_DEPLOY_HOOK"]}`
     end
   end
 end

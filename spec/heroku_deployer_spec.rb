@@ -6,6 +6,7 @@ describe HerokuDeployer do
     ENV['test_app_GIT_REPO'] = "git-repo"
     ENV['test_app_SSH_KEY'] = "private-key"
     ENV['DEPLOY_SSH_KEY'] = "private-deploy-key"
+    ENV['POST_DEPLOY_HOOK'] = nil
   end
 
   describe '.exists?' do
@@ -39,6 +40,7 @@ describe HerokuDeployer do
       before do
         deployer.stub(:update_local_repository)
         deployer.stub(:push)
+        deployer.stub(:post_deploy_hook)
       end
 
       it 'removes the folder and retries one time' do
@@ -53,6 +55,7 @@ describe HerokuDeployer do
       before do
         deployer.stub(:`)
         deployer.stub(:push)
+        deployer.stub(:post_deploy_hook)
       end
 
       let(:clone_cmd) do
@@ -97,6 +100,7 @@ describe HerokuDeployer do
     describe '#push' do
       before do
         deployer.stub(:update_local_repository)
+        deployer.stub(:post_deploy_hook)
       end
 
       it 'wrapps all calls with a GitSSHWrapper' do
@@ -110,6 +114,24 @@ describe HerokuDeployer do
 
       it 'pushes to heroku' do
         expect(deployer).to receive(:`).with(/cd repos\/\d+\; git push -f heroku master/)
+        deployer.deploy
+      end
+    end
+
+    describe '#post_deploy_hook' do
+      before do
+        deployer.stub(:update_local_repository)
+        deployer.stub(:push)
+      end
+
+      it 'does not hit the post deploy hook by default' do
+        expect(deployer).to_not receive(:`).with(/curl/)
+        deployer.deploy
+      end
+
+      it 'hits the post deploy hook' do
+        ENV['POST_DEPLOY_HOOK'] = "http://www.google.com/"
+        expect(deployer).to receive(:`).with("curl #{ENV['POST_DEPLOY_HOOK']}")
         deployer.deploy
       end
     end
