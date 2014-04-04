@@ -18,6 +18,9 @@ class Web < Sinatra::Application
   end
 
   post '/deploy/:app_name/:secret' do |app_name, secret|
+    if ENV['BRANCH']
+      return unless ENV['BRANCH'] == params[:ref].split("/").last
+    end
     if secret == ENV['DEPLOY_SECRET']
       logger.info "correct secret"
       if HerokuDeployer.exists?(app_name)
