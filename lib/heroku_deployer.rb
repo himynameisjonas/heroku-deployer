@@ -38,7 +38,9 @@ class HerokuDeployer
     @config ||= OpenStruct.new({
       heroku_repo: ENV["#{app}_HEROKU_REPO"],
       git_repo: ENV["#{app}_GIT_REPO"],
-      ssh_key: ENV["#{app}_SSH_KEY"]
+      ssh_key: ENV["#{app}_SSH_KEY"],
+      post_deploy_hook: ENV["#{app}_POST_DEPLOY_HOOK"],
+      post_deploy_hook_delay: ENV["#{app}_POST_DEPLOY_HOOK_DELAY"]
     })
   end
 
@@ -74,10 +76,10 @@ class HerokuDeployer
   end
 
   def post_deploy_hook
-    if ENV["POST_DEPLOY_HOOK"]
-      sleep ENV["POST_DEPLOY_HOOK_DELAY"].to_i if ENV["POST_DEPLOY_HOOK_DELAY"]
-      logger.info "hitting post deploy hook"
-      logger.debug `curl #{ENV["POST_DEPLOY_HOOK"]}`
+    if config.post_deploy_hook
+      sleep config.post_deploy_hook_delay.to_i
+      logger.info "calling post deploy hook"
+      logger.debug `#{config.post_deploy_hook}`
     end
   end
 end

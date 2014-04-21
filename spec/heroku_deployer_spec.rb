@@ -124,14 +124,14 @@ describe HerokuDeployer do
         deployer.stub(:push)
       end
 
-      it 'does not hit the post deploy hook by default' do
-        expect(deployer).to_not receive(:`).with(/curl/)
+      it 'does not call the post deploy hook by default' do
+        expect(deployer).to_not receive(:`).with(ENV['test_app_POST_DEPLOY_HOOK'])
         deployer.deploy
       end
 
       it 'hits the post deploy hook' do
-        ENV['POST_DEPLOY_HOOK'] = "http://www.google.com/"
-        expect(deployer).to receive(:`).with("curl #{ENV['POST_DEPLOY_HOOK']}")
+        ENV['test_app_POST_DEPLOY_HOOK'] = "curl http://www.google.com/"
+        expect(deployer).to receive(:`).with(ENV['test_app_POST_DEPLOY_HOOK'])
         deployer.deploy
       end
     end

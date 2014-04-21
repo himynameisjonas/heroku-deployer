@@ -118,10 +118,17 @@ to learn how to host a jekyll site on Heroku without need of building the site b
 
   Add a webhook to be hit after the server gets deployed.
   ```bash
-  heroku config:set POST_DEPLOY_HOOK=http://example_app/post_deploy_hook
+  heroku config:set example_app_POST_DEPLOY_HOOK=http://example_app/post_deploy_hook
   ```
 
-**Repeat step 4, 5, and 6 for each app you want to deploy**
+7. **Setup for specific branch (optional)**
+
+  Deploy only when a specifc branch is updated on github.
+  ```bash
+  heroku config:set example_app_BRANCH=master
+  ```
+
+**Repeat step 4, 5, 6, and 7 for each app you want to deploy**
 
 ## Credits
 Inspired by [github-heroku-jekyll-hook](https://github.com/dommmel/github-heroku-jekyll-hook) and [github-heroku-pusher](https://github.com/himynameisjonas/github-heroku-pusher)
