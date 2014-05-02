@@ -21,7 +21,7 @@ class HerokuDeployer
     begin
       update_local_repository
       push
-      post_deploy_hook
+      post_deploy_command
     rescue
       tries += 1
       if tries <= 1
@@ -39,8 +39,8 @@ class HerokuDeployer
       heroku_repo: ENV["#{app}_HEROKU_REPO"],
       git_repo: ENV["#{app}_GIT_REPO"],
       ssh_key: ENV["#{app}_SSH_KEY"],
-      post_deploy_hook: ENV["#{app}_POST_DEPLOY_HOOK"],
-      post_deploy_hook_delay: ENV["#{app}_POST_DEPLOY_HOOK_DELAY"]
+      post_deploy_command: ENV["#{app}_POST_DEPLOY_COMMAND"],
+      post_deploy_command_delay: ENV["#{app}_POST_DEPLOY_COMMAND_DELAY"]
     })
   end
 
@@ -75,11 +75,11 @@ class HerokuDeployer
     end
   end
 
-  def post_deploy_hook
-    if config.post_deploy_hook
-      sleep config.post_deploy_hook_delay.to_i
-      logger.info "calling post deploy hook"
-      logger.debug `#{config.post_deploy_hook}`
+  def post_deploy_command
+    if config.post_deploy_command
+      sleep config.post_deploy_command_delay.to_i
+      logger.info "calling post deploy command"
+      logger.debug `#{config.post_deploy_command}`
     end
   end
 end

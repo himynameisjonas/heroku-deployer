@@ -114,11 +114,11 @@ to learn how to host a jekyll site on Heroku without need of building the site b
   https://give_deployer_a_name.herokuapp.com/deploy/example_app/super_secret_string
   ```
 
-6. **Setup post deployment webhook (optional)**
+6. **Setup post deployment command (optional)**
 
-  Add a webhook to be hit after the server gets deployed.
+  Add a command to be run after the server gets deployed.
   ```bash
-  heroku config:set example_app_POST_DEPLOY_HOOK=http://example_app/post_deploy_hook
+  heroku config:set example_app_POST_DEPLOY_COMMAND='curl http://example_app/post_deploy_hook'
   ```
 
 7. **Setup for specific branch (optional)**
