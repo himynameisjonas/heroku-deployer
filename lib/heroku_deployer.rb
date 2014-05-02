@@ -39,8 +39,7 @@ class HerokuDeployer
       heroku_repo: ENV["#{app}_HEROKU_REPO"],
       git_repo: ENV["#{app}_GIT_REPO"],
       ssh_key: ENV["#{app}_SSH_KEY"],
-      post_deploy_command: ENV["#{app}_POST_DEPLOY_COMMAND"],
-      post_deploy_command_delay: ENV["#{app}_POST_DEPLOY_COMMAND_DELAY"]
+      post_deploy_command: ENV["#{app}_POST_DEPLOY_COMMAND"]
     })
   end
 
@@ -77,7 +76,6 @@ class HerokuDeployer
 
   def post_deploy_command
     if config.post_deploy_command
-      sleep config.post_deploy_command_delay.to_i
       logger.info "calling post deploy command"
       logger.debug `#{config.post_deploy_command}`
     end
