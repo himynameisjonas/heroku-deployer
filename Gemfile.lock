@@ -7,6 +7,7 @@ GEM
     dotenv (0.8.0)
     git (1.2.6)
     git-ssh-wrapper (0.2.0)
+    json (1.8.1)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
@@ -36,6 +37,7 @@ DEPENDENCIES
   dotenv
   git
   git-ssh-wrapper
+  json
   rack-test
   rspec
   sinatra

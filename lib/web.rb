@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'json'
 require_relative 'heroku_deployer'
 require_relative 'deploy_job'
 
@@ -18,6 +19,11 @@ class Web < Sinatra::Application
   end
 
   post '/deploy/:app_name/:secret' do |app_name, secret|
+    if ENV["#{app_name}_BRANCH"]
+      payload = JSON.parse(params["payload"])
+      branch = payload["ref"].split("/").last
+      return unless ENV["#{app_name}_BRANCH"] == branch
+    end
     if secret == ENV['DEPLOY_SECRET']
       logger.info "correct secret"
       if HerokuDeployer.exists?(app_name)

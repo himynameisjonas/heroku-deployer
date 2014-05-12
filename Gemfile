@@ -6,6 +6,7 @@ gem 'dotenv'
 
 gem 'git-ssh-wrapper'
 gem 'git'
+gem 'json'
 
 gem 'sucker_punch', '~> 1.0'
 

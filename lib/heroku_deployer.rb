@@ -21,6 +21,7 @@ class HerokuDeployer
     begin
       update_local_repository
       push
+      post_deploy_command
     rescue
       tries += 1
       if tries <= 1
@@ -38,6 +39,7 @@ class HerokuDeployer
       heroku_repo: ENV["#{app}_HEROKU_REPO"],
       git_repo: ENV["#{app}_GIT_REPO"],
       ssh_key: ENV["#{app}_SSH_KEY"],
+      post_deploy_command: ENV["#{app}_POST_DEPLOY_COMMAND"]
     })
   end
 
@@ -69,6 +71,13 @@ class HerokuDeployer
       wrapper.set_env
       logger.info "pushing"
       logger.debug `cd #{local_folder}; git push -f heroku master`
+    end
+  end
+
+  def post_deploy_command
+    if config.post_deploy_command
+      logger.info "calling post deploy command"
+      logger.debug `#{config.post_deploy_command}`
     end
   end
 end
