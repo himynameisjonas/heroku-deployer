@@ -123,7 +123,7 @@ to learn how to host a jekyll site on Heroku without need of building the site b
 
 7. **Setup for specific branch (optional)**
 
-  Deploy only when a specifc branch is updated on github.
+  Deploy only when a specific branch is updated on github and use this branch as the source of deployment (i.e do a "git push heroku [branch]:master) 
   ```bash
   heroku config:set example_app_BRANCH=master
   ```

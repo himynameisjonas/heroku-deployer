@@ -20,8 +20,9 @@ class Web < Sinatra::Application
 
   post '/deploy/:app_name/:secret' do |app_name, secret|
     if ENV["#{app_name}_BRANCH"]
-      payload = JSON.parse(params["payload"])
+      payload = JSON.parse(request.body.read)
       branch = payload["ref"].split("/").last
+      logger.info "GitHub branch to monitor : " + ENV["#{app_name}_BRANCH"] + ", push hook on : #{branch}"
       return unless ENV["#{app_name}_BRANCH"] == branch
     end
     if secret == ENV['DEPLOY_SECRET']
