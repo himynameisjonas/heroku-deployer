@@ -10,6 +10,7 @@ describe Web do
     ENV["#{test_app}_GIT_REPO"] = "git-repo"
     ENV["#{test_app}_SSH_KEY"] = "private-key"
     ENV['DEPLOY_SSH_KEY'] = 'private-deploy-key'
+    ENV["#{test_app}_BRANCH"] = nil
   end
 
   let(:app) { Web }
@@ -87,9 +88,25 @@ describe Web do
           data = {
               'ref' => 'refs/heads/dev'
           }
+
           post correct_path, data.to_json, "CONTENT_TYPE" => "application/json"
           expect(last_response).to be_ok
           expect(last_response.body).to eq('bypass')
+        end
+      end
+
+      context 'with a push from the monitored branch' do
+        it 'enqueues a job' do
+          deploy_job = double()
+          expect(deploy_job).to receive(:perform)
+          DeployJob.stub(:new => double(async: deploy_job))
+          data = {
+              'ref' => 'refs/heads/master'
+          }
+
+          post correct_path, data.to_json, "CONTENT_TYPE" => "application/json"
+          expect(last_response).to be_ok
+          expect(last_response.body).to eq('maybe')
         end
       end
     end
