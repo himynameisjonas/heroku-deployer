@@ -40,7 +40,7 @@ class HerokuDeployer
       git_repo: ENV["#{app}_GIT_REPO"],
       ssh_key: ENV["#{app}_SSH_KEY"],
       post_deploy_command: ENV["#{app}_POST_DEPLOY_COMMAND"],
-      github_branch: ENV["#{app}_BRANCH"]
+      github_branch: ENV["#{app}_BRANCH"] || 'master'
     })
   end
 
