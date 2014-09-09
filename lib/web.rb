@@ -23,7 +23,7 @@ class Web < Sinatra::Application
       payload = JSON.parse(request.body.read)
       branch = payload["ref"].split("/").last
       logger.info "GitHub branch to monitor : " + ENV["#{app_name}_BRANCH"] + ", push hook on : #{branch}"
-      return unless ENV["#{app_name}_BRANCH"] == branch
+      return 'bypass' unless ENV["#{app_name}_BRANCH"] == branch
     end
     if secret == ENV['DEPLOY_SECRET']
       logger.info "correct secret"

@@ -6,22 +6,23 @@ describe Web do
   include Rack::Test::Methods
 
   before do
-    ENV['test_app_HEROKU_REPO'] = "heroku-repo"
-    ENV['test_app_GIT_REPO'] = "git-repo"
-    ENV['test_app_SSH_KEY'] = "private-key"
+    ENV["#{test_app}_HEROKU_REPO"] = "heroku-repo"
+    ENV["#{test_app}_GIT_REPO"] = "git-repo"
+    ENV["#{test_app}_SSH_KEY"] = "private-key"
     ENV['DEPLOY_SSH_KEY'] = 'private-deploy-key'
   end
 
   let(:app) { Web }
   let(:deploy_secret) { 'super_secret' }
-  let(:correct_path) { "deploy/test_app/#{deploy_secret}" }
+  let(:test_app) { 'test_app' }
+  let(:correct_path) { "deploy/#{test_app}/#{deploy_secret}" }
   let(:mising_app_path) { "deploy/missing_app/#{deploy_secret}" }
 
   describe "post to /deploy"
   context 'without a deploy secret' do
     it 'requires a deploy key' do
       ENV['DEPLOY_SECRET'] = nil
-      post '/deploy/test_app'
+      post "/deploy/#{test_app}"
       expect(last_response).to be_ok
       expect(last_response.body).to eq('Set your DEPLOY_SECRET')
     end
@@ -56,7 +57,7 @@ describe Web do
   context 'with correct params' do
     before { ENV['DEPLOY_SECRET'] = deploy_secret }
 
-    context 'with an non existent app' do
+    context 'with a non existent app' do
       it 'returns maybe' do
         expect(DeployJob).to receive(:new).never
 
@@ -75,6 +76,21 @@ describe Web do
         post correct_path
         expect(last_response).to be_ok
         expect(last_response.body).to eq('maybe')
+      end
+    end
+
+    context 'with a single GitHub source branch to monitor' do
+      before { ENV["#{test_app}_BRANCH"] = 'master' }
+
+      context 'with a push from another branch' do
+        it 'returns nothing' do
+          data = {
+              'ref' => 'refs/heads/dev'
+          }
+          post correct_path, data.to_json, "CONTENT_TYPE" => "application/json"
+          expect(last_response).to be_ok
+          expect(last_response.body).to eq('bypass')
+        end
       end
     end
   end
