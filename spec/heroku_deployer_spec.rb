@@ -7,6 +7,7 @@ describe HerokuDeployer do
     ENV['test_app_SSH_KEY'] = "private-key"
     ENV['DEPLOY_SSH_KEY'] = "private-deploy-key"
     ENV['POST_DEPLOY_COMMAND'] = nil
+    ENV['test_app_BRANCH'] = nil
   end
 
   describe '.exists?' do
@@ -91,9 +92,17 @@ describe HerokuDeployer do
         end
       end
 
-      it 'fetches the latest updates from origin' do
+      it 'fetches the latest updates from origin (default branch = master)' do
         expect(deployer).to receive(:`).with(/cd repos\/\d+ && git fetch && git reset --hard origin\/master/)
         deployer.deploy
+      end
+
+      context 'with a monitored GitHub branch' do
+        before { ENV['test_app_BRANCH'] = 'dev' }
+        it 'fetches lastest updates and reset to this branch' do
+          expect(deployer).to receive(:`).with(/cd repos\/\d+ && git fetch && git reset --hard origin\/dev/)
+          deployer.deploy
+        end
       end
     end
 
@@ -113,8 +122,16 @@ describe HerokuDeployer do
       end
 
       it 'pushes to heroku' do
-        expect(deployer).to receive(:`).with(/cd repos\/\d+\; git push -f heroku master/)
+        expect(deployer).to receive(:`).with(/cd repos\/\d+\; git push -f heroku master:master/)
         deployer.deploy
+      end
+
+      context 'with a monitored GitHub branch' do
+        before { ENV['test_app_BRANCH'] = 'dev' }
+        it 'pushes this branch to heroku master branch' do
+          expect(deployer).to receive(:`).with(/cd repos\/\d+\; git push -f heroku dev:master/)
+          deployer.deploy
+        end
       end
     end
 
