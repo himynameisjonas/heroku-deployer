@@ -39,7 +39,8 @@ class HerokuDeployer
       heroku_repo: ENV["#{app}_HEROKU_REPO"],
       git_repo: ENV["#{app}_GIT_REPO"],
       ssh_key: ENV["#{app}_SSH_KEY"],
-      post_deploy_command: ENV["#{app}_POST_DEPLOY_COMMAND"]
+      post_deploy_command: ENV["#{app}_POST_DEPLOY_COMMAND"],
+      github_branch: ENV["#{app}_BRANCH"] || 'master'
     })
   end
 
@@ -55,8 +56,8 @@ class HerokuDeployer
     GitSSHWrapper.with_wrapper(:private_key => config.ssh_key) do |wrapper|
       wrapper.set_env
       clone unless repo_exists?
-      logger.info "fetching"
-      logger.debug `cd #{local_folder} && git fetch && git reset --hard origin/master`
+      logger.info "fetching #{config.github_branch}"
+      logger.debug `cd #{local_folder} && git fetch && git reset --hard origin/#{config.github_branch}`
     end
   end
 
@@ -70,7 +71,7 @@ class HerokuDeployer
     GitSSHWrapper.with_wrapper(:private_key => ENV['DEPLOY_SSH_KEY']) do |wrapper|
       wrapper.set_env
       logger.info "pushing"
-      logger.debug `cd #{local_folder}; git push -f heroku master`
+      logger.debug `cd #{local_folder}; git push -f heroku #{config.github_branch}:master`
     end
   end
 
