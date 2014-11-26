@@ -57,17 +57,13 @@ class HerokuDeployer
       wrapper.set_env
       clone unless repo_exists?
       logger.info "fetching #{config.github_branch}"
-      #logger.debug `cd #{local_folder} && git fetch && git reset --hard origin/#{config.github_branch}`
-      logger.info "# cd #{local_folder} && git fetch && git checkout #{config.github_branch} && git pull"
       logger.debug `cd #{local_folder} && git fetch && git checkout #{config.github_branch} && git pull`
     end
   end
 
   def clone
     logger.info "cloning"
-    logger.info "# git clone #{config.git_repo} #{local_folder}"
     logger.debug `git clone #{config.git_repo} #{local_folder}`
-    logger.info "# cd #{local_folder} && git remote add heroku #{config.heroku_repo}"
     logger.debug `cd #{local_folder} && git remote add heroku #{config.heroku_repo}`
   end
 
@@ -75,7 +71,6 @@ class HerokuDeployer
     GitSSHWrapper.with_wrapper(:private_key => ENV['DEPLOY_SSH_KEY']) do |wrapper|
       wrapper.set_env
       logger.info "pushing"
-      logger.info "# cd #{local_folder}; git push -f heroku #{config.github_branch}:master"
       logger.debug `cd #{local_folder}; git push -f heroku #{config.github_branch}:master`
     end
   end
