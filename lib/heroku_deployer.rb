@@ -45,7 +45,7 @@ class HerokuDeployer
   end
 
   def local_folder
-    @local_folder ||= "repos/#{Zlib.crc32(config.git_repo)}"
+    @local_folder ||= "repos/#{Zlib.crc32(config.git_repo + config.github_branch)}"
   end
 
   def repo_exists?
@@ -57,14 +57,17 @@ class HerokuDeployer
       wrapper.set_env
       clone unless repo_exists?
       logger.info "fetching #{config.github_branch}"
-      logger.debug `cd #{local_folder} && git fetch && git checkout #{config.github_branch} && git pull`
+      logger.debug `cd #{local_folder} && git fetch && git reset --hard origin/#{config.github_branch}`
     end
   end
 
   def clone
     logger.info "cloning"
     logger.debug `git clone #{config.git_repo} #{local_folder}`
+    logger.info "switching to branch #{config.github_branch}"
+    logger.debug `cd #{local_folder} && git fetch && git checkout #{config.github_branch} && git pull`
     logger.debug `cd #{local_folder} && git remote add heroku #{config.heroku_repo}`
+
   end
 
   def push
