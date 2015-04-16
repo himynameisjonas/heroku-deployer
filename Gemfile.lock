@@ -3,11 +3,17 @@ GEM
   specs:
     celluloid (0.15.2)
       timers (~> 1.1.0)
+    coderay (1.1.0)
     diff-lcs (1.2.4)
     dotenv (0.8.0)
     git (1.2.6)
     git-ssh-wrapper (0.2.0)
     json (1.8.1)
+    method_source (0.8.2)
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
@@ -25,6 +31,7 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
+    slop (3.6.0)
     sucker_punch (1.0.2)
       celluloid (~> 0.15.1)
     tilt (1.4.1)
@@ -38,6 +45,7 @@ DEPENDENCIES
   git
   git-ssh-wrapper
   json
+  pry
   rack-test
   rspec
   sinatra

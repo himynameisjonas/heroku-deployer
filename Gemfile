@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby "2.0.0"
+ruby "2.1.5"
 
 gem 'sinatra'
 gem 'dotenv'
@@ -13,4 +13,5 @@ gem 'sucker_punch', '~> 1.0'
 group :test do
   gem 'rspec'
   gem 'rack-test'
+  gem 'pry'
 end
