@@ -5,6 +5,9 @@ require_relative 'deploy_job'
 require 'pry'
 
 class Web < Sinatra::Application
+
+  attr_accessor :errors
+
   before do
     if ENV['DEPLOY_SECRET'].nil? || ENV['DEPLOY_SECRET'].empty?
       halt 'Set your DEPLOY_SECRET'
@@ -37,6 +40,7 @@ class Web < Sinatra::Application
     DeployJob.new.async.perform(app_name) if check_secret(secret) &&
                                              check_app_exist(app_name) &&
                                              build_status(build_stat)
+    return errors if errors
     'maybe'
   end
 
@@ -45,6 +49,7 @@ class Web < Sinatra::Application
       logger.info 'correct secret'
       return true
     else
+
       logger.info 'wrong secret'
       return false
     end
@@ -55,7 +60,7 @@ class Web < Sinatra::Application
       logger.info 'app exists'
       return true
     else
-      logger.info 'no app'
+      logger.info  'no app'
       return false
     end
   end
@@ -64,7 +69,8 @@ class Web < Sinatra::Application
     if build_stat == 'success' || build_stat == 'none'
       return true
     else
-      logger.info 'build status false'
+      @errors = 'build status false'
+      logger.info @errors
       return false
     end
   end

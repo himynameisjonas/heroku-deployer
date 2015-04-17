@@ -111,5 +111,19 @@ describe Web do
         end
       end
     end
+
+    context 'with Gitlab' do
+      context 'with a push with failed build' do
+        it 'returns nothing' do
+          data = {
+              'ref' => 'master',
+              'build_status' => 'failed'
+          }
+          post correct_path, data.to_json, "CONTENT_TYPE" => "application/json"
+          expect(last_response).to be_ok
+          expect(last_response.body).to eq('build status false')
+        end
+      end
+    end
   end
 end
