@@ -46,7 +46,6 @@ describe Web do
 
     it 'returns maybe' do
       post correct_path
-      binding.pry
       expect(last_response).to be_ok
       expect(last_response.body).to eq('maybe')
     end
