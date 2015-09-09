@@ -19,6 +19,7 @@ class Web < Sinatra::Application
   end
 
   post '/deploy/:app_name/:secret' do |app_name, secret|
+    request.body.rewind  # in case someone already read it
     if ENV["#{app_name}_BRANCH"]
       payload = JSON.parse(request.body.read)
       branch = payload["ref"].split("/").last
