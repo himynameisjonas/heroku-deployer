@@ -132,3 +132,7 @@ to learn how to host a jekyll site on Heroku without need of building the site b
 
 ## Credits
 Inspired by [github-heroku-jekyll-hook](https://github.com/dommmel/github-heroku-jekyll-hook) and [github-heroku-pusher](https://github.com/himynameisjonas/github-heroku-pusher)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/himynameisjonas/heroku-deployer/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
